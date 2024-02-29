@@ -8,4 +8,10 @@ public class Cliente extends Usuario {
         this.cnh = cnh;
     }
 
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "cnh='" + cnh + '\'' +
+                '}';
+    }
 }

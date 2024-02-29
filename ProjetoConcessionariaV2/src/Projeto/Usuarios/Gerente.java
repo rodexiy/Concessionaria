@@ -38,6 +38,17 @@ public class Gerente extends Funcionario{
         Veiculo.addVeiculo(veiculo);
     }
 
+    @Override
+    public float verPagamento() {
+        float comissao = 0;
+
+        for (Venda venda: vendas) {
+
+        }
+
+        return (comissao + this.salario);
+    }
+
     public float verPagamentos() {
         float totalPagamento = 0;
         for (Usuario usuario: getUsuarios()) {

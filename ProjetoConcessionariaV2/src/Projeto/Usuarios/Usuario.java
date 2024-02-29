@@ -24,7 +24,7 @@ public abstract class Usuario {
         return cpf;
     }
 
-    protected void addVeiculo(Veiculo veiculo) {
+    public void addVeiculo(Veiculo veiculo) {
         meusVeiculos.add(veiculo);
     }
 
@@ -36,13 +36,31 @@ public abstract class Usuario {
         usuarios.add(usuario);
     }
 
+    public static Usuario getUsuario(String cpf) {
+        for (Usuario usuario: usuarios) {
+            if (usuario.cpf.equals(cpf)) {
+                return usuario;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "meusVeiculos=" + meusVeiculos +
+                ", nome='" + nome + '\'' +
+                ", cpf='" + cpf + '\'' +
+                '}';
+    }
+
     public Usuario(String nome, String cpf, String senha) {
         this.nome = nome;
         this.cpf = cpf;
         this.senha = senha;
     }
 
-    protected List<Veiculo> verMeusVeiculos() {
+    public List<Veiculo> verMeusVeiculos() {
         return Collections.unmodifiableList(this.meusVeiculos);
     }
 

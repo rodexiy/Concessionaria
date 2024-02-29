@@ -4,6 +4,7 @@ import Projeto.Usuarios.*;
 import Projeto.Veiculos.Carro;
 import Projeto.Veiculos.Veiculo;
 
+import javax.security.auth.kerberos.KerberosTicket;
 import java.sql.SQLOutput;
 import java.util.Scanner;
 
@@ -34,15 +35,7 @@ public class Main {
                 3 - Ver estoque
                 4 - Ver detalhes de um veiculo
                 """);
-        System.out.println("Insira a sua ação: ");
 
-        int acao = sc.nextInt();
-        switch (acao) {
-            case 1 -> login();
-            case 2 -> cadastroDeCliente();
-            case 3 -> verEstoque();
-            case 4 -> verDetalhesDeUmVeiculo();
-        }
 
         if (logado != null) {
             System.out.println("5 - Ver meus veiculos");
@@ -68,13 +61,88 @@ public class Main {
                             """);
                 }
             }
+        }
 
+        System.out.println("Insira a sua ação: ");
+        int acao = sc.nextInt();
+        switch (acao) {
+            case 1 -> login();
+            case 2 -> cadastroDeCliente();
+            case 3 -> verEstoque();
+            case 4 -> verDetalhesDeUmVeiculo();
+        }
+
+        if (logado != null) {
+            if (acao == 5) {
+                verMeusVeiculos();
+            }
+
+            if (logado instanceof Funcionario) {
+                switch (acao) {
+                    case 6 -> venderUmVeiculo();
+                    case 7 -> procurarCliente();
+                    case 8 -> verPagamento();
+
+                }
+            }
 
 
         }
 
     }
 
+    public static void verPagamento() {
+
+    }
+
+    public static void procurarCliente() {
+        System.out.println("Insira o cpf do cliente: ");
+        String cpf = sc.next();
+
+        Usuario cliente = Usuario.getUsuario(cpf);
+
+        if (!(cliente instanceof Cliente)){
+            System.out.println("Cliente não existe");
+            return;
+        }
+
+        System.out.println(cliente.toString());
+    }
+
+    public static void venderUmVeiculo() {
+        System.out.println("Insira o codigo do veiculo: ");
+        String codigo = sc.next();
+        Veiculo veiculo = Veiculo.getVeiculo(codigo);
+        if (veiculo == null) {
+            System.out.println("Veiculo não existe");
+            return;
+        }
+
+        System.out.println("Insira o cpf do cliente: ");
+        String cpf = sc.next();
+
+        Usuario cliente = Usuario.getUsuario(cpf);
+        if (cliente == null) {
+            System.out.println("Usuario nao existe");
+            return;
+        }else{
+            if (!(cliente instanceof Cliente)) {
+                return;
+            }
+        }
+
+        Venda venda = new Venda(logado.getCpf(), cpf, codigo);
+
+        ((Funcionario) logado).addVenda(venda);
+        veiculo.setStatus("Vendido");
+        cliente.addVeiculo(veiculo);
+    }
+
+    public static void verMeusVeiculos() {
+        for (Veiculo veiculo: logado.verMeusVeiculos()) {
+            System.out.println(veiculo.toString());
+        }
+    }
     public static void verDetalhesDeUmVeiculo() {
         System.out.println("Insira o codigo do veiculo: ");
         String codigo = sc.next();
