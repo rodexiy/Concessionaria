@@ -1,7 +1,9 @@
 package Projeto;
 
 import Projeto.Usuarios.*;
+import Projeto.Veiculos.Caminhao;
 import Projeto.Veiculos.Carro;
+import Projeto.Veiculos.Moto;
 import Projeto.Veiculos.Veiculo;
 
 import javax.security.auth.kerberos.KerberosTicket;
@@ -11,7 +13,7 @@ import java.util.Scanner;
 public class Main {
     private static Cliente cliente = new Cliente("Pedro", "123", "123", "123");
     private static Carro Focus = new Carro("Ford", "Focus", "ABC1234", "123456", true, "Disponível", 10000, 2022, 50000.0f);
-    private static Vendedor vendedor = new Vendedor("Jefferson", "312", "123",3000f);
+    private static Vendedor vendedor = new Vendedor("Jefferson", "432", "123",3000f);
     private static Gerente gerente = new Gerente("Henrique", "321",  "123", 7600f);
     private static Scanner sc = new Scanner(System.in);
     private static Usuario logado = null;
@@ -82,9 +84,19 @@ public class Main {
                     case 6 -> venderUmVeiculo();
                     case 7 -> procurarCliente();
                     case 8 -> verPagamento();
+                }
 
+                if (logado instanceof Gerente) {
+                    switch (acao) {
+                        case 9 -> cadastrarVeiculo();
+                        case 10 -> removerVeiculo();
+                        case 11 -> editarVeiculo();
+                        case 12 -> adicionarUsuario();
+                        case 13 -> removerUsuario();
+                    }
                 }
             }
+
 
 
         }
@@ -93,6 +105,7 @@ public class Main {
 
     public static void verPagamento() {
 
+        System.out.println("Pagamento: "+ ((Funcionario) logado).verPagamento());
     }
 
     public static void procurarCliente() {
@@ -181,5 +194,117 @@ public class Main {
         System.out.println("Insira a senha: ");
         String senha = sc.next();
         logado = Usuario.login(cpf, senha);
+    }
+
+    public static Veiculo menuCadastrarVeiculo() {
+        System.out.println("Qual tipo de veiculo deseja cadastrar:");
+        System.out.println("""
+                1 - Carro
+                2 - Moto
+                3 - Caminhão
+                """);
+
+        int tipoVeiculo = sc.nextInt();
+
+        System.out.println("Informe a marca do veículo:");
+        String marca = sc.nextLine();
+
+        System.out.println("Informe o modelo do veículo:");
+        String modelo = sc.nextLine();
+
+        System.out.println("Informe a placa do veículo:");
+        String placa = sc.nextLine();
+
+        System.out.println("Informe o código do veículo:");
+        String codigo = sc.nextLine();
+
+        System.out.println("O veículo é novo? (true/false):");
+        boolean novo = sc.nextBoolean();
+
+        System.out.println("Informe o status do veículo: (Disponivel/Vendido)");
+        String status = sc.nextLine();
+
+        System.out.println("Informe a quilometragem do veículo:");
+        int quilometragem = sc.nextInt();
+
+        System.out.println("Informe o ano do veículo:");
+        int ano = sc.nextInt();
+
+        System.out.println("Informe o preço do veículo:");
+        float preco = sc.nextFloat();
+
+        Veiculo veiculoGenerico = null;
+
+        switch (tipoVeiculo) {
+            case 1:
+                veiculoGenerico = new Carro(marca, modelo, placa, codigo, novo, status, quilometragem, ano, preco);
+                break;
+            case 2:
+                veiculoGenerico = new Moto(marca, modelo, placa, codigo, novo, status, quilometragem, ano, preco);
+                break;
+            case 3:
+                System.out.println("Informe o peso máximo do veículo:");
+                int pesoMaximo = sc.nextInt();
+
+                System.out.println("Informe o comprimento do veículo:");
+                float comprimento = sc.nextInt();
+
+                System.out.println("Informe a quantidade de rodas do veículo:");
+                int quantidadeDeRodas = sc.nextInt();
+                veiculoGenerico = new Caminhao(marca, modelo, placa, codigo, novo, status, quilometragem, ano, preco, pesoMaximo, comprimento, quantidadeDeRodas);
+        }
+
+        return veiculoGenerico;
+
+    }
+
+    public static void cadastrarVeiculo() {
+        Veiculo veiculoGenerico = menuCadastrarVeiculo();
+
+        if (veiculoGenerico != null) {
+            Veiculo.addVeiculo(veiculoGenerico);
+            System.out.println("O veiculo foi cadastrado com sucesso!");
+        }else {
+            System.out.println("Não foi possivel cadastrar o veiculo!");
+        }
+    }
+
+    public static void removerVeiculo() {
+        System.out.println("Insira o codigo do veiculo que deseja remover: ");
+        String codigo = sc.next();
+
+        Veiculo veiculo = Veiculo.getVeiculo(codigo);
+
+        if (veiculo != null) {
+            logado.addVeiculo(veiculo);
+            System.out.println("veiculo removido!");
+        }else{
+            System.out.println("O veiculo não existe");
+        }
+    }
+
+    public static void editarVeiculo() {
+        Veiculo novoVeiculo = menuCadastrarVeiculo();
+
+        if (novoVeiculo != null) {
+            ((Gerente) logado).editarVeiculo(novoVeiculo);
+            System.out.println("Veiculo editado!");
+        }else {
+            System.out.println("Veiculo nao existe");
+        }
+    }
+
+    public static void adicionarUsuario() {}
+    public static void removerUsuario() {
+        System.out.println("Insira o cpf do usuario que deseja remover: ");
+        String cpf = sc.next();
+
+        boolean callback = ((Gerente) logado).removerUsuario(cpf);
+
+        if (callback) {
+            System.out.println("Usuario removido!");
+        }else {
+            System.out.println("Não foi possivel remover o usuário!");
+        }
     }
 }

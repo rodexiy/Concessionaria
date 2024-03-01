@@ -43,7 +43,11 @@ public class Gerente extends Funcionario{
         float comissao = 0;
 
         for (Venda venda: vendas) {
+            Veiculo veiculo = Veiculo.getVeiculo(venda.getCodigo());
 
+            if (veiculo != null) {
+                comissao += veiculo.getPreco() * 0.02;
+            }
         }
 
         return (comissao + this.salario);
@@ -58,6 +62,22 @@ public class Gerente extends Funcionario{
         }
 
         return totalPagamento;
+    }
+
+    public boolean removerUsuario(String cpf) {
+        Usuario usuario = Usuario.getUsuario(cpf);
+
+        if (usuario == null) {
+            return false;
+        }
+
+        if (this.getCpf().equals(cpf)) {
+            return false;
+        }
+
+        remUsuario(usuario);
+        return true;
+
     }
 
     public Float verPagamentoDeUmVendedor(String cpf) {

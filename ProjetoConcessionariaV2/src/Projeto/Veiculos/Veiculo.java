@@ -103,6 +103,10 @@ public class Veiculo {
         return codigo;
     }
 
+    public float getPreco() {
+        return preco;
+    }
+
     public Veiculo(String marca, String modelo, String placa, String codigo, boolean novo, String status, int quilometragem, int ano, float preco) {
         this.marca = marca;
         this.modelo = modelo;

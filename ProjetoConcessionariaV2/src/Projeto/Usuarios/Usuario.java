@@ -73,6 +73,11 @@ public abstract class Usuario {
         }
     }
 
+    public static void remUsuario(Usuario usuario) {
+        usuarios.remove(usuario);
+    }
+
+
 public static Usuario login(String cpf, String senha) {
     for (Usuario user: usuarios) {
         if (user.cpf.equals(cpf) && user.senha.equals(senha)) {
