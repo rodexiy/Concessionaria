@@ -67,8 +67,6 @@ public class Main {
             System.out.println("0 - Sair");
         }
 
-
-
         System.out.println("Insira a sua ação: ");
         int acao = sc.nextInt();
         switch (acao) {
@@ -106,11 +104,7 @@ public class Main {
                     }
                 }
             }
-
-
-
         }
-
     }
 
     public static void sair() {
@@ -158,6 +152,7 @@ public class Main {
         ((Funcionario) logado).addVenda(venda);
         veiculo.setStatus("Vendido");
         cliente.addVeiculo(veiculo);
+        System.out.println("Veículo vendido!");
     }
 
     public static void verMeusVeiculos() {
@@ -165,6 +160,7 @@ public class Main {
             System.out.println(veiculo.toString());
         }
     }
+
     public static void verDetalhesDeUmVeiculo() {
         System.out.println("Insira o codigo do veiculo: ");
         String codigo = sc.next();
@@ -197,6 +193,7 @@ public class Main {
         Cliente cliente = new Cliente(nome, cpf, senha, cnh);
         Usuario.addUsuario(cliente);
     }
+
     public static void login() {
         System.out.println("Insira o cpf: ");
         String cpf = sc.next();
@@ -206,7 +203,7 @@ public class Main {
     }
 
     public static Veiculo menuCadastrarVeiculo() {
-        System.out.println("Qual tipo de veiculo deseja cadastrar:");
+        System.out.println("Qual tipo de veiculo deseja cadastrar/Editar:");
         System.out.println("""
                 1 - Carro
                 2 - Moto
@@ -262,9 +259,7 @@ public class Main {
                 int quantidadeDeRodas = sc.nextInt();
                 veiculoGenerico = new Caminhao(marca, modelo, placa, codigo, novo, status, quilometragem, ano, preco, pesoMaximo, comprimento, quantidadeDeRodas);
         }
-
         return veiculoGenerico;
-
     }
 
     public static void cadastrarVeiculo() {
@@ -288,7 +283,9 @@ public class Main {
             return;
         }
 
-        ((Gerente) gerente).editarUmUsuario(usuario);
+        Usuario novoUsuario = menuCadastrarUsuario();
+
+        ((Gerente) gerente).editarUmUsuario(novoUsuario);
         System.out.println("Usuário editado!");
     }
 
