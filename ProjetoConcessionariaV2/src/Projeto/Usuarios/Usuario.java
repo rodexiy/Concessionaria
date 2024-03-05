@@ -88,6 +88,28 @@ public static Usuario login(String cpf, String senha) {
     return null;
 }
 
+public static List<Vendedor> getVendedores() {
+    ArrayList<Vendedor> vendedores = new ArrayList<>();
+    for (Usuario usuario: usuarios) {
+        if (usuario instanceof Vendedor) {
+            vendedores.add((Vendedor) usuario);
+        }
+    }
+
+    return Collections.unmodifiableList(vendedores);
+}
+
+public static List<Cliente> getClientes() {
+    ArrayList<Cliente> clientes = new ArrayList<>();
+    for (Usuario usuario: usuarios) {
+        if (usuario instanceof Cliente) {
+            clientes.add((Cliente) usuario);
+        }
+    }
+
+    return Collections.unmodifiableList(clientes);
+}
+
 
 
 }

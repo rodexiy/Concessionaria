@@ -63,11 +63,16 @@ public class Main {
                             """);
                 }
             }
+
+            System.out.println("0 - Sair");
         }
+
+
 
         System.out.println("Insira a sua ação: ");
         int acao = sc.nextInt();
         switch (acao) {
+            case 0 -> sair();
             case 1 -> login();
             case 2 -> cadastroDeCliente();
             case 3 -> verEstoque();
@@ -91,8 +96,13 @@ public class Main {
                         case 9 -> cadastrarVeiculo();
                         case 10 -> removerVeiculo();
                         case 11 -> editarVeiculo();
-                        case 12 -> adicionarUsuario();
+                        case 12 -> cadastrarUsuario();
                         case 13 -> removerUsuario();
+                        case 14 -> editarUsuario();
+                        case 15 -> verVendedores();
+                        case 16 -> verClientes();
+                        case 17 -> verPagamentosDosVendedores();
+                        case 18 -> verPagamentoDeUmVendedor();
                     }
                 }
             }
@@ -103,8 +113,11 @@ public class Main {
 
     }
 
-    public static void verPagamento() {
+    public static void sair() {
+        logado = null;
+    }
 
+    public static void verPagamento() {
         System.out.println("Pagamento: "+ ((Funcionario) logado).verPagamento());
     }
 
@@ -138,10 +151,6 @@ public class Main {
         if (cliente == null) {
             System.out.println("Usuario nao existe");
             return;
-        }else{
-            if (!(cliente instanceof Cliente)) {
-                return;
-            }
         }
 
         Venda venda = new Venda(logado.getCpf(), cpf, codigo);
@@ -162,6 +171,7 @@ public class Main {
         Veiculo veiculo = Veiculo.getVeiculo(codigo);
 
         if (veiculo == null) {
+            System.out.println("Veiculo não existe!");
             return;
         }
 
@@ -183,7 +193,6 @@ public class Main {
         String cpf = sc.next();
         System.out.println("Insira a CNH: ");
         String cnh = sc.next();
-
 
         Cliente cliente = new Cliente(nome, cpf, senha, cnh);
         Usuario.addUsuario(cliente);
@@ -269,6 +278,20 @@ public class Main {
         }
     }
 
+    public static void editarUsuario() {
+        System.out.println("Insira o cpf do usuario que deseja editar: ");
+        String cpf = sc.next();
+        Usuario usuario = Usuario.getUsuario(cpf);
+
+        if (usuario == null) {
+            System.out.println("Não existe nenhum usuário com esse cpf!");
+            return;
+        }
+
+        ((Gerente) gerente).editarUmUsuario(usuario);
+        System.out.println("Usuário editado!");
+    }
+
     public static void removerVeiculo() {
         System.out.println("Insira o codigo do veiculo que deseja remover: ");
         String codigo = sc.next();
@@ -287,6 +310,11 @@ public class Main {
         Veiculo novoVeiculo = menuCadastrarVeiculo();
 
         if (novoVeiculo != null) {
+            if (Veiculo.getVeiculo(novoVeiculo.getCodigo()) == null) {
+                System.out.println("Não existe nenhum veiculo com esse código");
+                return;
+            }
+
             ((Gerente) logado).editarVeiculo(novoVeiculo);
             System.out.println("Veiculo editado!");
         }else {
@@ -294,7 +322,53 @@ public class Main {
         }
     }
 
-    public static void adicionarUsuario() {}
+    public static void cadastrarUsuario() {
+        Usuario usuario = menuCadastrarUsuario();
+
+        if (usuario != null) {
+            ((Gerente) logado).cadastrarUsuario(usuario);
+        }
+    }
+
+    public static Usuario menuCadastrarUsuario() {
+        System.out.println("""
+                Que tipo de usuario deseja cadastrar/editar:
+                1 - Cliente:
+                2 - Vendedor:
+                """);
+
+        Usuario usuario = null;
+
+        int tipoUsuario = sc.nextInt();
+
+        System.out.println("Insira o nome do usuario: ");
+        String nome = sc.next();
+
+        System.out.println("Insira o cpf do usuario: ");
+        String cpf = sc.next();
+
+        System.out.println("Insira a senha: ");
+        String senha = sc.next();
+
+        switch (tipoUsuario) {
+            case 1:
+                System.out.println("Insira a CNH do usuario: ");
+                String cnh = sc.next();
+                usuario = new Cliente(nome, cpf, senha, cnh);
+                break;
+            case 2:
+                System.out.println("Insira o salario do usuario: ");
+                float salario = sc.nextFloat();
+                usuario = new Vendedor(nome, cpf, senha, salario);
+        }
+
+        return usuario;
+    }
+
+    public static void verPagamentosDosVendedores() {
+        System.out.println("Pagamento: "+ ((Gerente) gerente).verPagamentos());
+    }
+
     public static void removerUsuario() {
         System.out.println("Insira o cpf do usuario que deseja remover: ");
         String cpf = sc.next();
@@ -306,5 +380,35 @@ public class Main {
         }else {
             System.out.println("Não foi possivel remover o usuário!");
         }
+    }
+
+    public static void verVendedores() {
+        for (Vendedor vendedor: ((Gerente) logado).verVendedores()) {
+            System.out.println(vendedor.toString());
+        }
+    }
+
+    public static void verClientes() {
+        for (Cliente cliente: ((Gerente) logado).verClientes()) {
+            System.out.println(cliente.toString());
+        }
+    }
+
+    public static void verPagamentoDeUmVendedor() {
+        System.out.println("Insira o cpf do vendedor: ");
+        String cpf = sc.next();
+
+        Usuario vendedor = Usuario.getUsuario(cpf);
+
+        if (vendedor == null) {
+            System.out.println("Vendedor não existe!");
+            return;
+        }
+        if (!(vendedor instanceof  Vendedor)) {
+            System.out.println("Usuário não é um vendedor!");
+            return;
+        }
+
+        System.out.println("Pagamento: "+ ((Vendedor) vendedor).verPagamento());
     }
 }

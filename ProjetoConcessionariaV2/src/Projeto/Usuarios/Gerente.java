@@ -3,6 +3,8 @@ package Projeto.Usuarios;
 import Projeto.Veiculos.Veiculo;
 import Projeto.Venda;
 
+import java.util.List;
+
 public class Gerente extends Funcionario{
 
     public Gerente(String nome, String cpf, String senha, float salario) {
@@ -99,10 +101,15 @@ public class Gerente extends Funcionario{
     }
 
     public void editarVeiculo(Veiculo novoVeiculo) {
-        for (Veiculo veiculo: Veiculo.getVeiculos()) {
-
-        }
+        Veiculo.editarVeiculo(novoVeiculo);
     }
 
+    public List<Vendedor> verVendedores() {
+        return getVendedores();
+    }
+
+    public List<Cliente> verClientes() {
+        return getClientes();
+    }
 
 }
