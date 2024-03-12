@@ -1,7 +1,6 @@
 package Projeto.Usuarios;
 
 import Projeto.Veiculos.Veiculo;
-import Projeto.Venda;
 
 import java.util.List;
 
@@ -12,12 +11,20 @@ public class Gerente extends Funcionario{
     }
 
     @Override
-    public void venderVeiculo(String codigoVeiculo, String cpfCliente) {
-        Usuario cliente = Funcionario.procurarCliente(cpfCliente);
-
-        Venda venda = new Venda(this.getCpf(), cpfCliente, codigoVeiculo);
-        addVenda(venda);
-        //cliente.addVeiculo();
+    public String menuFuncionario() {
+        return super.menuFuncionario() +
+                """
+                9 - Cadastrar veiculo
+                10 - Remover veiculo
+                11 - Editar veiculo
+                12 - Adicionar Cliente/Vendedor
+                13 - Remover Cliente/Vendedor
+                14 - Editar Cliente/Vendedor
+                15 - Ver vendedores
+                16 - Ver clientes
+                17 - Ver pagamento dos vendedores
+                18 - Ver pagamento de um vendedor
+                """;
     }
 
     public void alterarPreco(String codigo, float novoPreco) {
@@ -28,32 +35,26 @@ public class Gerente extends Funcionario{
         }
     }
 
-    public void removerVeiculo(String codigo) {
+    public String removerVeiculo(String codigo) {
         Veiculo veiculo = Veiculo.getVeiculo(codigo);
 
         if (veiculo != null) {
-            Veiculo.remVeiculo(veiculo);
+            veiculo.remVeiculo();
+            return "Veiculo removido!";
         }
+
+        return "Veiculo não existe!";
     }
 
     public void cadastrarVeiculo(Veiculo veiculo) {
-        Veiculo.addVeiculo(veiculo);
+        veiculo.addVeiculo();
     }
 
     @Override
-    public float verPagamento() {
-        float comissao = 0;
-
-        for (Venda venda: vendas) {
-            Veiculo veiculo = Veiculo.getVeiculo(venda.getCodigo());
-
-            if (veiculo != null) {
-                comissao += veiculo.getPreco() * 0.02;
-            }
-        }
-
-        return (comissao + this.salario);
+    protected double valorComissao() {
+        return 0.02;
     }
+
 
     public float verPagamentos() {
         float totalPagamento = 0;
@@ -66,20 +67,19 @@ public class Gerente extends Funcionario{
         return totalPagamento;
     }
 
-    public boolean removerUsuario(String cpf) {
+    public String removerUsuario(String cpf) {
         Usuario usuario = Usuario.getUsuario(cpf);
 
         if (usuario == null) {
-            return false;
+            return "Usuario não existe!";
         }
 
         if (this.getCpf().equals(cpf)) {
-            return false;
+            return "Você não pode remover a si mesmo!";
         }
 
-        remUsuario(usuario);
-        return true;
-
+        usuario.remUsuario();
+        return "Usuario removido!";
     }
 
     public Float verPagamentoDeUmVendedor(String cpf) {
@@ -93,7 +93,7 @@ public class Gerente extends Funcionario{
     }
 
     public void cadastrarUsuario(Usuario usuario) {
-        addUsuario(usuario);
+        usuario.addUsuario();
     }
 
     public void editarUmUsuario(Usuario novoUsuario) {

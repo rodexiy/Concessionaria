@@ -1,5 +1,6 @@
 package Projeto.Usuarios;
 
+import Projeto.Veiculos.Veiculo;
 import Projeto.Venda;
 import java.util.ArrayList;
 
@@ -7,28 +8,58 @@ public abstract class Funcionario extends Usuario {
     protected ArrayList<Venda> vendas = new ArrayList<>();
     protected float salario;
 
-    // faltou ser Static
-    public static Usuario procurarCliente(String cpf) {
+    protected abstract double valorComissao();
+
+    public String menuFuncionario() {
+        return super.menuFuncionario() + """
+               6 - Vender veiculo
+               7 - Procurar cliente
+               8 - Ver Pagamento
+               """;
+    }
+
+    public String procurarCliente(String cpf) {
         for (Usuario usuario: Usuario.getUsuarios()) {
             if (usuario instanceof Cliente && usuario.getCpf().equals(cpf)) {
-                return usuario;
+                return usuario.toString();
             }
         }
 
-        return null;
+        return "Cliente não existe!";
     }
 
     public void addVenda(Venda venda) {
         this.vendas.add(venda);
     }
 
-    //trocar de int para float ou Double
-    public abstract float verPagamento();
+    public float verPagamento() {
+        float comissao = 0;
+
+        for (Venda venda: vendas) {
+            Veiculo veiculo = Veiculo.getVeiculo(venda.getCodigo());
+
+            if (veiculo != null) {
+                comissao += veiculo.getPreco() * valorComissao();
+            }
+        }
+
+        return (comissao + this.salario);
+    }
 
     public Funcionario(String nome, String cpf, String senha, float salario) {
         super(nome, cpf, senha);
         this.salario = salario;
     }
 
-    public abstract void venderVeiculo(String codigoVeiculo, String cpfCliente);
+    public void venderVeiculo(String codigoVeiculo, Usuario cliente) {
+        Veiculo veiculo = Veiculo.getVeiculo(codigoVeiculo);
+
+        if (veiculo.isVendido()) {
+            return;
+        }
+        Venda venda = new Venda(this.getCpf(), cliente.getCpf(), codigoVeiculo);
+        addVenda(venda);
+        veiculo.setStatus("Vendido");
+        cliente.addVeiculo(veiculo);
+    };
 }

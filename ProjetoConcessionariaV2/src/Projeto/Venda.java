@@ -1,11 +1,10 @@
 package Projeto;
 
 public class Venda {
-    String cpfVendedor;
-    String cpfCliente;
-    String codigo;
+    private String cpfVendedor;
+    private String cpfCliente;
+    private String codigo;
 
-    // faltou construtor
     public Venda(String cpfVendedor, String cpfCliente, String codigo) {
         this.cpfVendedor = cpfVendedor;
         this.cpfCliente = cpfCliente;
@@ -14,13 +13,5 @@ public class Venda {
 
     public String getCodigo() {
         return codigo;
-    }
-
-    public String getCpfCliente() {
-        return cpfCliente;
-    }
-
-    public String getCpfVendedor() {
-        return cpfVendedor;
     }
 }

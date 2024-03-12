@@ -2,28 +2,17 @@ package Projeto.Usuarios;
 
 import Projeto.Veiculos.Veiculo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public abstract class Usuario {
     static ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
     ArrayList<Veiculo> meusVeiculos = new ArrayList<>();
     private String nome;
     private String cpf;
-
     private String senha;
-    // faltou addVeiculos
-    // faltou senha
-    // getUsuario
-    // getCpf
-    // addVeiculo
-
     public String getCpf() {
         return cpf;
     }
-
     public void addVeiculo(Veiculo veiculo) {
         meusVeiculos.add(veiculo);
     }
@@ -32,8 +21,27 @@ public abstract class Usuario {
         return Collections.unmodifiableList(usuarios);
     }
 
-    public static void addUsuario(Usuario usuario) {
-        usuarios.add(usuario);
+    public String menuFuncionario() {
+        return """
+               5 - Ver meus veiculos
+               """;
+    }
+
+    public void addUsuario() {
+        usuarios.add(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return Objects.equals(cpf, usuario.cpf);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cpf);
     }
 
     public static Usuario getUsuario(String cpf) {
@@ -64,52 +72,51 @@ public abstract class Usuario {
         return Collections.unmodifiableList(this.meusVeiculos);
     }
 
-    // faltou editarUsuario
     public static void editarUsuario(Usuario novoUsuario) {
         for (Usuario usuarioAntigo: usuarios) {
-            if (usuarioAntigo.cpf.equals(novoUsuario.cpf)) {
+            if (usuarioAntigo.equals(novoUsuario)) {
                 usuarios.set(usuarios.indexOf(usuarioAntigo), novoUsuario);
+                break;
             }
         }
     }
 
-    public static void remUsuario(Usuario usuario) {
-        usuarios.remove(usuario);
+    public void remUsuario() {
+        usuarios.remove(this);
     }
 
+    public static Usuario login(String cpf, String senha) {
+        System.out.println(usuarios.toString());
+        for (Usuario user: usuarios) {
 
-public static Usuario login(String cpf, String senha) {
-    for (Usuario user: usuarios) {
-        if (user.cpf.equals(cpf) && user.senha.equals(senha)) {
-            return user;
+            if (user.cpf.equals(cpf) && user.senha.equals(senha)) {
+                return user;
+            }
         }
+
+        return null;
     }
 
-    return null;
-}
-
-public static List<Vendedor> getVendedores() {
-    ArrayList<Vendedor> vendedores = new ArrayList<>();
-    for (Usuario usuario: usuarios) {
-        if (usuario instanceof Vendedor) {
-            vendedores.add((Vendedor) usuario);
+    public static List<Vendedor> getVendedores() {
+        ArrayList<Vendedor> vendedores = new ArrayList<>();
+        for (Usuario usuario: usuarios) {
+            if (usuario instanceof Vendedor) {
+                vendedores.add((Vendedor) usuario);
+            }
         }
+
+        return Collections.unmodifiableList(vendedores);
     }
 
-    return Collections.unmodifiableList(vendedores);
-}
-
-public static List<Cliente> getClientes() {
-    ArrayList<Cliente> clientes = new ArrayList<>();
-    for (Usuario usuario: usuarios) {
-        if (usuario instanceof Cliente) {
-            clientes.add((Cliente) usuario);
+    public static List<Cliente> getClientes() {
+        ArrayList<Cliente> clientes = new ArrayList<>();
+        for (Usuario usuario: usuarios) {
+            if (usuario instanceof Cliente) {
+                clientes.add((Cliente) usuario);
+            }
         }
+
+        return Collections.unmodifiableList(clientes);
     }
-
-    return Collections.unmodifiableList(clientes);
-}
-
-
 
 }

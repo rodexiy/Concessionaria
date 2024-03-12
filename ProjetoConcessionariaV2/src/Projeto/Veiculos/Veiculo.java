@@ -1,6 +1,5 @@
 package Projeto.Veiculos;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +16,6 @@ public class Veiculo {
     private int ano;
     private float preco;
 
-    //faltou getVeiculo
     public static Veiculo getVeiculo(String codigo) {
         for (Veiculo veiculo: veiculos) {
             if (veiculo.codigo.equals(codigo)) {
@@ -34,19 +32,17 @@ public class Veiculo {
             return veiculo.toString();
         }
 
-        return null;
+        return "Veiculo não existe!";
     }
 
-    public static void addVeiculo(Veiculo veiculo) {
-        veiculos.add(veiculo);
+    public void addVeiculo() {
+        veiculos.add(this);
     }
 
-    //faltou
     public static List<Veiculo> getVeiculos() {
         return Collections.unmodifiableList(veiculos);
     }
 
-    //faltou editarVeiculo
     public static void editarVeiculo(Veiculo novoVeiculo) {
         for (Veiculo veiculoAntigo: veiculos) {
             if (veiculoAntigo.codigo.equals(novoVeiculo.codigo)) {
@@ -54,9 +50,6 @@ public class Veiculo {
             }
         }
     }
-
-    //faltou setStatus
-
 
     public void setStatus(String status) {
         this.status = status;
@@ -66,8 +59,8 @@ public class Veiculo {
         return status.equals("Vendido");
     }
 
-    public static void remVeiculo(Veiculo veiculo) {
-        veiculos.remove(veiculo);
+    public void remVeiculo() {
+        veiculos.remove(this);
     }
 
     public void setPreco(float preco) {
@@ -78,12 +71,10 @@ public class Veiculo {
         return Collections.unmodifiableList(veiculos);
     }
 
-    //faltou pegar informações do estoque
     public String getInformacoesParaListarEstoque() {
         return  this.codigo + ": "+ this.marca + " " + this.modelo + " " + this.ano ;
     }
 
-    //faltou toString
     @Override
     public String toString() {
         return "Veiculo{" +
