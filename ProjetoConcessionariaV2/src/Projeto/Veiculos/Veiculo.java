@@ -1,5 +1,9 @@
 package Projeto.Veiculos;
 
+import Projeto.Exceptions.PrecoInvalidoException;
+import Projeto.Exceptions.VeiculoExistenteException;
+import Projeto.Exceptions.VeiculoNaoEncontradoException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,27 +20,39 @@ public class Veiculo {
     private int ano;
     private float preco;
 
-    public static Veiculo getVeiculo(String codigo) {
+    public static Veiculo getVeiculo(String codigo) throws VeiculoNaoEncontradoException {
         for (Veiculo veiculo: veiculos) {
             if (veiculo.codigo.equals(codigo)) {
                 return veiculo;
             }
         }
-        return null;
+
+        throw new VeiculoNaoEncontradoException(codigo);
     }
 
     public static String verVeiculo(String codigo) {
-        Veiculo veiculo = getVeiculo(codigo);
-
-        if (veiculo != null) {
+        try {
+            Veiculo veiculo = getVeiculo(codigo);
             return veiculo.toString();
+        }catch (VeiculoNaoEncontradoException exception) {
+            System.err.println(exception);
         }
+
 
         return "Veiculo não existe!";
     }
 
     public void addVeiculo() {
-        veiculos.add(this);
+        try {
+            if (Veiculo.getVeiculo(this.codigo) == null) {
+                veiculos.add(this);
+            }else {
+                throw new VeiculoExistenteException(this.codigo);
+            }
+        }catch (VeiculoNaoEncontradoException exception) {
+        }catch (VeiculoExistenteException exception) {
+            System.err.println(exception);
+        }
     }
 
     public static List<Veiculo> getVeiculos() {
@@ -63,8 +79,12 @@ public class Veiculo {
         veiculos.remove(this);
     }
 
-    public void setPreco(float preco) {
-        this.preco = preco;
+    public void setPreco(float preco) throws PrecoInvalidoException {
+        if (preco > 0) {
+            this.preco = preco;
+        }else{
+            throw new PrecoInvalidoException();
+        }
     }
 
     public static List<Veiculo> verVeiculos() {

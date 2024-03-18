@@ -1,12 +1,15 @@
 package Projeto.Usuarios;
 
+import Projeto.Exceptions.SenhaIncorretaException;
+import Projeto.Exceptions.UsuarioExistenteException;
+import Projeto.Exceptions.UsuarioNaoEncontradoException;
 import Projeto.Veiculos.Veiculo;
 
 import java.util.*;
 
 public abstract class Usuario {
     static ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
-    ArrayList<Veiculo> meusVeiculos = new ArrayList<>();
+    private ArrayList<Veiculo> meusVeiculos = new ArrayList<>();
     private String nome;
     private String cpf;
     private String senha;
@@ -27,8 +30,16 @@ public abstract class Usuario {
                """;
     }
 
-    public void addUsuario() {
-        usuarios.add(this);
+    public void addUsuario()  {
+        try {
+            if (Usuario.getUsuario(this.cpf) != null) {
+                throw new UsuarioExistenteException(this.cpf);
+            }
+            usuarios.add(this);
+        }catch (UsuarioExistenteException exception) {
+            System.err.println(exception);
+        }
+
     }
 
     @Override
@@ -85,7 +96,7 @@ public abstract class Usuario {
         usuarios.remove(this);
     }
 
-    public static Usuario login(String cpf, String senha) throws UsuarioNaoEncontradoException  {
+    public static Usuario login(String cpf, String senha) throws UsuarioNaoEncontradoException {
         System.out.println(usuarios.toString());
         for (Usuario user: usuarios) {
             if (user.cpf.equals(cpf)) {

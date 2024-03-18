@@ -1,5 +1,6 @@
 package Projeto;
 
+import Projeto.Exceptions.*;
 import Projeto.Usuarios.*;
 import Projeto.Veiculos.Caminhao;
 import Projeto.Veiculos.Carro;
@@ -51,34 +52,55 @@ public class Main {
         }
 
         System.out.println(acao);
-        if (logado != null) {
+        try {
+            if (logado == null) {
+                if (acao >= 5) {
+                    throw new AcessoNegadoException();
+                }
+            }
+
             if (acao == 5) {
                 verMeusVeiculos();
             }
 
-            if (logado instanceof Funcionario) {
-                switch (acao) {
-                    case 6 -> venderUmVeiculo();
-                    case 7 -> procurarCliente();
-                    case 8 -> verPagamento();
-                }
-
-                if (logado instanceof Gerente) {
-                    switch (acao) {
-                        case 9 -> cadastrarVeiculo();
-                        case 10 -> removerVeiculo();
-                        case 11 -> editarVeiculo();
-                        case 12 -> cadastrarUsuario();
-                        case 13 -> removerUsuario();
-                        case 14 -> editarUsuario();
-                        case 15 -> verVendedores();
-                        case 16 -> verClientes();
-                        case 17 -> verPagamentosDosVendedores();
-                        case 18 -> verPagamentoDeUmVendedor();
-                        case 19 -> alterarPrecoVeiculo();
-                    }
+            if (!(logado instanceof Funcionario)) {
+                if (acao > 8) {
+                    throw new AcessoNegadoException();
                 }
             }
+            switch (acao) {
+                case 6 -> venderUmVeiculo();
+                case 7 -> procurarCliente();
+                case 8 -> verPagamento();
+            }
+
+            if (!(logado instanceof Gerente)) {
+                if (acao > 19) {
+                    throw new AcessoNegadoException();
+                }
+            }
+            switch (acao) {
+                case 9 -> cadastrarVeiculo();
+                case 10 -> removerVeiculo();
+                case 11 -> editarVeiculo();
+                case 12 -> cadastrarUsuario();
+                case 13 -> removerUsuario();
+                case 14 -> editarUsuario();
+                case 15 -> verVendedores();
+                case 16 -> verClientes();
+                case 17 -> verPagamentosDosVendedores();
+                case 18 -> verPagamentoDeUmVendedor();
+                case 19 -> alterarPrecoVeiculo();
+            }
+
+            if (acao > 19) {
+                throw new OpcaoInvalidaException(acao);
+            }
+
+        }catch (AcessoNegadoException exception) {
+            System.err.println(exception);
+        }catch (OpcaoInvalidaException exception) {
+            System.err.println(exception);
         }
     }
 
@@ -130,22 +152,26 @@ public class Main {
     }
 
     public static void venderUmVeiculo() {
-        String codigo = pedirCodigoVeiculo();
-        Veiculo veiculo = Veiculo.getVeiculo(codigo);
-        if (veiculo == null) {
-            System.out.println("Veiculo não existe");
-            return;
-        }
+        try {
+            String codigo = pedirCodigoVeiculo();
+            Veiculo veiculo = Veiculo.getVeiculo(codigo);
+            if (veiculo == null) {
+                System.out.println("Veiculo não existe");
+                return;
+            }
 
-        String cpf = pedirCPF();
-        Usuario cliente = Usuario.getUsuario(cpf);
-        if (cliente == null) {
-            System.out.println("Usuario nao existe");
-            return;
-        }
+            String cpf = pedirCPF();
+            Usuario cliente = Usuario.getUsuario(cpf);
+            if (cliente == null) {
+                System.out.println("Usuario nao existe");
+                return;
+            }
 
-        ((Funcionario) logado).venderVeiculo(codigo, cliente);
-        System.out.println("Vendido");
+            ((Funcionario) logado).venderVeiculo(codigo, cliente);
+            System.out.println("Vendido");
+        }catch (VeiculoNaoEncontradoException exception) {
+            System.err.println(exception);
+        }
     }
 
     public static void verMeusVeiculos() {
@@ -276,18 +302,22 @@ public class Main {
     }
 
     public static void editarVeiculo() {
-        Veiculo novoVeiculo = menuCadastrarVeiculo();
+        try {
+            Veiculo novoVeiculo = menuCadastrarVeiculo();
 
-        if (novoVeiculo != null) {
-            if (Veiculo.getVeiculo(novoVeiculo.getCodigo()) == null) {
-                System.out.println("Não existe nenhum veiculo com esse código");
-                return;
+            if (novoVeiculo != null) {
+                if (Veiculo.getVeiculo(novoVeiculo.getCodigo()) == null) {
+                    System.out.println("Não existe nenhum veiculo com esse código");
+                    return;
+                }
+
+                ((Gerente) logado).editarVeiculo(novoVeiculo);
+                System.out.println("Veiculo editado!");
+            }else {
+                System.out.println("Veiculo nao existe");
             }
-
-            ((Gerente) logado).editarVeiculo(novoVeiculo);
-            System.out.println("Veiculo editado!");
-        }else {
-            System.out.println("Veiculo nao existe");
+        }catch (VeiculoNaoEncontradoException exception) {
+            System.err.println(exception);
         }
     }
 

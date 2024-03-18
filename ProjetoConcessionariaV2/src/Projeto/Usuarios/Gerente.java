@@ -1,5 +1,7 @@
 package Projeto.Usuarios;
 
+import Projeto.Exceptions.PrecoInvalidoException;
+import Projeto.Exceptions.VeiculoNaoEncontradoException;
 import Projeto.Veiculos.Veiculo;
 
 import java.util.List;
@@ -24,25 +26,33 @@ public class Gerente extends Funcionario{
                 16 - Ver clientes
                 17 - Ver pagamento dos vendedores
                 18 - Ver pagamento de um vendedor
+                19 - Alterar preço de um veiculo
                 """;
     }
 
     public void alterarPreco(String codigo, float novoPreco) {
-        Veiculo veiculo = Veiculo.getVeiculo(codigo);
-
-        if (veiculo != null) {
+        try {
+            Veiculo veiculo = Veiculo.getVeiculo(codigo);
             veiculo.setPreco(novoPreco);
+        }catch (VeiculoNaoEncontradoException exception) {
+            System.err.println(exception);
+        }catch (PrecoInvalidoException exception) {
+            System.err.println(exception);
         }
     }
 
     public String removerVeiculo(String codigo) {
-        Veiculo veiculo = Veiculo.getVeiculo(codigo);
+        try{
+            Veiculo veiculo = Veiculo.getVeiculo(codigo);
 
-        if (veiculo != null) {
-            veiculo.remVeiculo();
-            return "Veiculo removido!";
+            if (veiculo != null) {
+                veiculo.remVeiculo();
+                return "Veiculo removido!";
+            }
+
+        }catch (VeiculoNaoEncontradoException exception) {
+            System.err.println(exception);
         }
-
         return "Veiculo não existe!";
     }
 

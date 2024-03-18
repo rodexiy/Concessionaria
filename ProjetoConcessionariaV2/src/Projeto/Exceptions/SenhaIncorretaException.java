@@ -1,4 +1,4 @@
-package Projeto.Usuarios;
+package Projeto.Exceptions;
 
 public class SenhaIncorretaException extends RuntimeException {
     public SenhaIncorretaException() {

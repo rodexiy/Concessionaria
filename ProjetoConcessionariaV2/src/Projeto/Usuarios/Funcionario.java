@@ -1,5 +1,6 @@
 package Projeto.Usuarios;
 
+import Projeto.Exceptions.VeiculoNaoEncontradoException;
 import Projeto.Veiculos.Veiculo;
 import Projeto.Venda;
 import java.util.ArrayList;
@@ -36,10 +37,14 @@ public abstract class Funcionario extends Usuario {
         float comissao = 0;
 
         for (Venda venda: vendas) {
-            Veiculo veiculo = Veiculo.getVeiculo(venda.getCodigo());
+            try {
+                Veiculo veiculo = Veiculo.getVeiculo(venda.getCodigo());
 
-            if (veiculo != null) {
-                comissao += veiculo.getPreco() * valorComissao();
+                if (veiculo != null) {
+                    comissao += veiculo.getPreco() * valorComissao();
+                }
+            }catch (VeiculoNaoEncontradoException exception) {
+                System.err.println(exception);
             }
         }
 
@@ -52,14 +57,18 @@ public abstract class Funcionario extends Usuario {
     }
 
     public void venderVeiculo(String codigoVeiculo, Usuario cliente) {
-        Veiculo veiculo = Veiculo.getVeiculo(codigoVeiculo);
+        try {
+            Veiculo veiculo = Veiculo.getVeiculo(codigoVeiculo);
 
-        if (veiculo.isVendido()) {
-            return;
+            if (veiculo.isVendido()) {
+                return;
+            }
+            Venda venda = new Venda(this.getCpf(), cliente.getCpf(), codigoVeiculo);
+            addVenda(venda);
+            veiculo.setStatus("Vendido");
+            cliente.addVeiculo(veiculo);
+        }catch (VeiculoNaoEncontradoException exception) {
+            System.out.println(exception);
         }
-        Venda venda = new Venda(this.getCpf(), cliente.getCpf(), codigoVeiculo);
-        addVenda(venda);
-        veiculo.setStatus("Vendido");
-        cliente.addVeiculo(veiculo);
     };
 }
