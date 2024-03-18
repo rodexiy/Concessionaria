@@ -178,7 +178,25 @@ public class Main {
     public static void login() {
         String cpf = pedirCPF();
         String senha = pedirSenha();
-        logado = Usuario.login(cpf, senha);
+
+        try {
+            logado = Usuario.login(cpf, senha);
+        } catch (UsuarioNaoEncontradoException exception) {
+            System.out.println(exception.getMessage());
+            System.out.println("Deseja realizar o cadastro?");
+            System.out.println("""
+                    1 - Sim;
+                    outro - Não
+                    """);
+
+            int entrada = sc.nextInt();
+            if (entrada == 1) {
+                cadastroDeCliente();
+            }
+        } catch (SenhaIncorretaException exception) {
+
+        }
+
     }
 
     public static Veiculo menuCadastrarVeiculo() {

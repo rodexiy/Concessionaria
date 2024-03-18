@@ -85,16 +85,19 @@ public abstract class Usuario {
         usuarios.remove(this);
     }
 
-    public static Usuario login(String cpf, String senha) {
+    public static Usuario login(String cpf, String senha) throws UsuarioNaoEncontradoException  {
         System.out.println(usuarios.toString());
         for (Usuario user: usuarios) {
+            if (user.cpf.equals(cpf)) {
+                if (!user.senha.equals(senha)) {
+                    throw new SenhaIncorretaException();
+                }
 
-            if (user.cpf.equals(cpf) && user.senha.equals(senha)) {
                 return user;
             }
         }
 
-        return null;
+        throw new UsuarioNaoEncontradoException(cpf);
     }
 
     public static List<Vendedor> getVendedores() {
