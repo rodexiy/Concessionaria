@@ -30,16 +30,21 @@ public abstract class Usuario {
                """;
     }
 
-    public void addUsuario()  {
-        try {
-            if (Usuario.getUsuario(this.cpf) != null) {
-                throw new UsuarioExistenteException(this.cpf);
+    public boolean usuarioExiste(String cpf) {
+        for (Usuario usuario: usuarios) {
+            if (usuario.cpf.equals(cpf)) {
+                return true;
             }
-            usuarios.add(this);
-        }catch (UsuarioExistenteException exception) {
-            System.err.println(exception);
         }
 
+        return false;
+    }
+
+    public void addUsuario() throws UsuarioExistenteException  {
+        if (usuarioExiste(this.cpf)) {
+            throw new UsuarioExistenteException(this.cpf);
+        }
+        usuarios.add(this);
     }
 
     @Override
@@ -109,6 +114,10 @@ public abstract class Usuario {
         }
 
         throw new UsuarioNaoEncontradoException(cpf);
+    }
+
+    public String getSenha() {
+        return senha;
     }
 
     public static List<Vendedor> getVendedores() {

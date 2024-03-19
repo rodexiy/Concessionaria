@@ -1,6 +1,7 @@
 package Projeto.Usuarios;
 
 import Projeto.Exceptions.PrecoInvalidoException;
+import Projeto.Exceptions.UsuarioExistenteException;
 import Projeto.Exceptions.VeiculoNaoEncontradoException;
 import Projeto.Veiculos.Veiculo;
 
@@ -103,7 +104,11 @@ public class Gerente extends Funcionario{
     }
 
     public void cadastrarUsuario(Usuario usuario) {
-        usuario.addUsuario();
+        try {
+            usuario.addUsuario();
+        }catch (UsuarioExistenteException exception) {
+            System.err.println(exception);
+        }
     }
 
     public void editarUmUsuario(Usuario novoUsuario) {

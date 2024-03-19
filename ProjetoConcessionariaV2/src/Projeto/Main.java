@@ -17,9 +17,14 @@ public class Main {
     private static Usuario logado = null;
 
     public static void main(String[] args) {
-        cliente.addUsuario();
-        vendedor.addUsuario();
-        gerente.addUsuario();
+        try {
+            cliente.addUsuario();
+            vendedor.addUsuario();
+            gerente.addUsuario();
+        }catch (UsuarioExistenteException exception) {
+            System.err.println(exception);
+        }
+
         gerente.cadastrarVeiculo(Focus);
 
         while (true) {
@@ -198,7 +203,11 @@ public class Main {
         String cnh = pedirCNH();
 
         Cliente cliente = new Cliente(nome, cpf, senha, cnh);
-        cliente.addUsuario();
+        try {
+            cliente.addUsuario();
+        } catch (UsuarioExistenteException exception) {
+            System.err.println(exception);
+        }
     }
 
     public static void login() {
@@ -307,7 +316,6 @@ public class Main {
 
             if (novoVeiculo != null) {
                 if (Veiculo.getVeiculo(novoVeiculo.getCodigo()) == null) {
-                    System.out.println("Não existe nenhum veiculo com esse código");
                     return;
                 }
 

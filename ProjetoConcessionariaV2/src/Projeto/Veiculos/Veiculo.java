@@ -42,14 +42,22 @@ public class Veiculo {
         return "Veiculo não existe!";
     }
 
+    public static boolean veiculoExiste(String codigo) {
+        for (Veiculo veiculo: veiculos) {
+            if (veiculo.codigo.equals(codigo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addVeiculo() {
         try {
-            if (Veiculo.getVeiculo(this.codigo) == null) {
+            if (!veiculoExiste(codigo)) {
                 veiculos.add(this);
             }else {
                 throw new VeiculoExistenteException(this.codigo);
             }
-        }catch (VeiculoNaoEncontradoException exception) {
         }catch (VeiculoExistenteException exception) {
             System.err.println(exception);
         }
