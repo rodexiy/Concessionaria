@@ -1,42 +1,44 @@
 package Projeto.Usuarios;
 
 import Projeto.Exceptions.UsuarioNaoEncontradoException;
+import Projeto.Exceptions.VeiculoExistenteException;
+import Projeto.Exceptions.VeiculoNaoEncontradoException;
 import Projeto.Veiculos.Veiculo;
 
 import java.util.ArrayList;
 
-public class BancoVeiculos implements IBanco<Usuario, String>{
+public class BancoVeiculos implements IBanco<Veiculo, String>{
     private static ArrayList<Veiculo> listaVeiculos;
 
-    public void alterar(String cpf, Usuario novoUsuario) throws UsuarioNaoEncontradoException {
-        Usuario usuario = procurarUsuario(cpf);
-        listaVeiculos.set(listaVeiculos.indexOf(usuario), novoUsuario);
+    public void alterar(String cpf, Veiculo novo) throws VeiculoNaoEncontradoException {
+        Veiculo veiculo = buscar(cpf);
+        listaVeiculos.set(listaVeiculos.indexOf(veiculo), novo);
     }
 
-    public ArrayList<Usuario> buscarTodosUsuarios() {
+    public ArrayList<Veiculo> buscarTodos() {
         return listaVeiculos;
     }
 
     public void remover(Usuario usuario) {
         listaVeiculos.remove(usuario);
     }
-    public Usuario buscar(String cpf) throws UsuarioNaoEncontradoException {
-        for (Usuario usuario: listaUsuarios) {
-            if (usuario.getCpf().equals(cpf)) {
-                return usuario;
+    public Veiculo buscar(String codigo) throws VeiculoNaoEncontradoException {
+        for (Veiculo novo: listaVeiculos) {
+            if (novo.getCodigo().equals(codigo)) {
+                return novo;
             }
         }
 
-        throw new UsuarioNaoEncontradoException(cpf);
+        throw new VeiculoNaoEncontradoException(codigo);
     }
 
-    public void remover(String cpf) throws UsuarioNaoEncontradoException {
-        listaVeiculos.remove(procurarUsuario(cpf));
+    public void remover(String codigo) throws VeiculoNaoEncontradoException {
+        listaVeiculos.remove(buscar(codigo));
     }
 
 
-    public void adicionar(Usuario usuario) {
-        listaVeiculos.add(usuario);
+    public void adicionar(Veiculo veiculo) {
+        listaVeiculos.add(veiculo);
     }
 
 }
